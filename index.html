@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS580 数字冷烫增效 · COOL SHINE</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #0e1116;
+    color: #e8eaf0;
+    min-height: 100vh;
+  }
+  .page { max-width: 600px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  .brand { text-align: center; padding: 18px 0 6px; }
+  .brand .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; }
+  .brand .logo span { color: #5b8cff; }
+  .brand .sub { font-size: 12px; color: #8a93a6; letter-spacing: 4px; margin-top: 6px; }
+
+  .card {
+    background: #171c24;
+    border: 1px solid #232a36;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+  .section-title {
+    font-size: 13px; font-weight: 700; color: #5b8cff;
+    letter-spacing: 2px; text-transform: uppercase;
+    margin: 2px 0 12px;
+  }
+
+  video { width: 100%; border-radius: 10px; display: block; background: #000; }
+  .poster-img { width: 100%; border-radius: 10px; display: block; }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 14px; margin-bottom: 6px; color: #c3cad8; }
+  .field input {
+    width: 100%; padding: 13px 14px; font-size: 15px;
+    background: #0e1116; border: 1px solid #2b3444; border-radius: 10px;
+    color: #e8eaf0; outline: none;
+  }
+  .field input:focus { border-color: #5b8cff; }
+  .btn {
+    width: 100%; padding: 15px; border: none; border-radius: 10px;
+    background: #2f66f0; color: #fff; font-size: 16px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn:disabled { opacity: .5; }
+  .form-tip { font-size: 12px; color: #6b7488; text-align: center; margin-top: 10px; }
+  .form-ok { display: none; text-align: center; padding: 26px 10px; }
+  .form-ok .check {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: #1d3a24; color: #4ade80; font-size: 28px; line-height: 56px;
+    margin: 0 auto 14px;
+  }
+  .form-ok h3 { font-size: 18px; margin-bottom: 8px; }
+  .form-ok p { font-size: 14px; color: #8a93a6; }
+  .form-err { display: none; color: #f87171; font-size: 13px; text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="brand">
+    <div class="logo">COOL SHINE<span>.</span> 酷闪</div>
+    <div class="sub">CS580 · UV DIGITAL COLD-FOIL ENHANCEMENT</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">效果视频 · Video</div>
+    <video controls playsinline preload="metadata" src="video.mp4"></video>
+  </div>
+
+  <div class="card">
+    <div class="section-title">产品海报 · Poster</div>
+    <img class="poster-img" src="poster-p1.jpg" alt="CS580 产品海报">
+  </div>
+
+  <div class="card" id="lead-card">
+    <div class="section-title">联系我们 · Get in touch</div>
+    <form id="lead-form" novalidate>
+      <div class="field">
+        <label for="f-surname">姓氏 Surname *</label>
+        <input id="f-surname" type="text" autocomplete="family-name" required>
+      </div>
+      <div class="field">
+        <label for="f-company">公司名称 Company *</label>
+        <input id="f-company" type="text" autocomplete="organization" required>
+      </div>
+      <div class="field">
+        <label for="f-contact">联系方式 Contact（电话 / 邮箱 / WhatsApp）*</label>
+        <input id="f-contact" type="text" autocomplete="tel" required>
+      </div>
+      <button class="btn" type="submit" id="lead-btn">提交 Submit</button>
+      <div class="form-err" id="lead-err">提交失败，请检查网络后重试</div>
+      <div class="form-tip">您的信息仅用于业务联系，我们将严格保密</div>
+    </form>
+    <div class="form-ok" id="lead-ok">
+      <div class="check">✓</div>
+      <h3>感谢您的提交！</h3>
+      <p>我们的团队将尽快与您联系</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.getElementById("lead-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const surname = document.getElementById("f-surname").value.trim();
+  const company = document.getElementById("f-company").value.trim();
+  const contact = document.getElementById("f-contact").value.trim();
+  if (!surname || !company || !contact) {
+    alert("请填写全部三项必填内容");
+    return;
+  }
+  const btn = document.getElementById("lead-btn");
+  const err = document.getElementById("lead-err");
+  btn.disabled = true;
+  btn.textContent = "提交中…";
+  err.style.display = "none";
+  try {
+    const res = await fetch("https://formsubmit.co/ajax/3180200367@caa.edu.cn", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        姓氏: surname,
+        公司名称: company,
+        联系方式: contact,
+        _subject: "CS580 客户留资提交",
+        _template: "table",
+        _captcha: "false"
+      })
+    });
+    if (!res.ok) throw new Error("bad status");
+    document.getElementById("lead-form").style.display = "none";
+    document.getElementById("lead-ok").style.display = "block";
+  } catch (ex) {
+    err.style.display = "block";
+    btn.disabled = false;
+    btn.textContent = "提交 Submit";
+  }
+});
+</script>
+</body>
+</html>
